@@ -1,0 +1,15 @@
+[package]
+name = "khepri-app"
+version = "0.1.0"
+edition = "2024"
+
+[[bin]]
+name = "khepri"
+path = "src/main.rs"
+
+[dependencies]
+khepri-core = { path = "../khepri-core" }
+khepri-editor = { path = "../khepri-editor" }
+eframe = { version = "0.34", default-features = false, features = ["glow", "accesskit", "default_fonts", "wayland", "x11", "persistence"] }
+tracing = "0.1"
+tracing-subscriber = "0.3"

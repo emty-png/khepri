@@ -1,0 +1,8 @@
+[package]
+name = "khepri-editor"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+khepri-core = { path = "../khepri-core" }
+eframe = { version = "0.34", default-features = false, features = ["glow", "accesskit", "default_fonts", "wayland", "x11", "persistence"] }
