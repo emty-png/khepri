@@ -36,7 +36,7 @@ pub fn show_properties(ui: &mut egui::Ui, scene: &mut Scene) {
         ui.add_space(8.0);
 
         // Override text style to small for all DragValue inputs
-        let prev_override = ui.style().override_text_style;
+        let prev_override = ui.style().override_text_style.clone();
         let prev_slider = ui.style().spacing.slider_width;
         ui.style_mut().override_text_style = Some(egui::TextStyle::Small);
         ui.style_mut().spacing.slider_width = 80.0;
