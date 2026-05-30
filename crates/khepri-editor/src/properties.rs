@@ -36,7 +36,8 @@ pub fn show_properties(ui: &mut egui::Ui, scene: &mut Scene) {
         ui.add_space(8.0);
 
         // Override text style to small for all DragValue inputs
-        let prev_style = ui.style().clone();
+        let prev_override = ui.style().override_text_style;
+        let prev_slider = ui.style().spacing.slider_width;
         ui.style_mut().override_text_style = Some(egui::TextStyle::Small);
         ui.style_mut().spacing.slider_width = 80.0;
 
@@ -100,7 +101,8 @@ pub fn show_properties(ui: &mut egui::Ui, scene: &mut Scene) {
         ui.add(egui::DragValue::new(&mut obj.rotation).speed(1.0).range(-360.0..=360.0).suffix(" deg"));
 
         // Restore style
-        *ui.style_mut() = prev_style;
+        ui.style_mut().override_text_style = prev_override;
+        ui.style_mut().spacing.slider_width = prev_slider;
     }
 
     // Borrow is released here, so we can call remove_selected
