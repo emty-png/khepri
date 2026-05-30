@@ -35,6 +35,11 @@ pub fn show_properties(ui: &mut egui::Ui, scene: &mut Scene) {
     if let Some(obj) = scene.get_selected_mut() {
         ui.add_space(8.0);
 
+        // Override text style to small for all DragValue inputs
+        let prev_style = ui.style().clone();
+        ui.style_mut().override_text_style = Some(egui::TextStyle::Small);
+        ui.style_mut().spacing.slider_width = 80.0;
+
         // Type (read-only)
         ui.horizontal(|ui| {
             ui.label(egui::RichText::new("Type").size(11.0).color(fg));
@@ -70,9 +75,9 @@ pub fn show_properties(ui: &mut egui::Ui, scene: &mut Scene) {
         ui.add_space(2.0);
         ui.horizontal(|ui| {
             ui.label(egui::RichText::new("X").size(11.0).color(fg));
-            ui.add(egui::DragValue::new(&mut obj.x).speed(1.0).font(egui::FontId::proportional(11.0)));
+            ui.add(egui::DragValue::new(&mut obj.x).speed(1.0));
             ui.label(egui::RichText::new("Y").size(11.0).color(fg));
-            ui.add(egui::DragValue::new(&mut obj.y).speed(1.0).font(egui::FontId::proportional(11.0)));
+            ui.add(egui::DragValue::new(&mut obj.y).speed(1.0));
         });
 
         ui.add_space(12.0);
@@ -82,9 +87,9 @@ pub fn show_properties(ui: &mut egui::Ui, scene: &mut Scene) {
         ui.add_space(2.0);
         ui.horizontal(|ui| {
             ui.label(egui::RichText::new("W").size(11.0).color(fg));
-            ui.add(egui::DragValue::new(&mut obj.width).speed(1.0).range(1.0..=5000.0).font(egui::FontId::proportional(11.0)));
+            ui.add(egui::DragValue::new(&mut obj.width).speed(1.0).range(1.0..=5000.0));
             ui.label(egui::RichText::new("H").size(11.0).color(fg));
-            ui.add(egui::DragValue::new(&mut obj.height).speed(1.0).range(1.0..=5000.0).font(egui::FontId::proportional(11.0)));
+            ui.add(egui::DragValue::new(&mut obj.height).speed(1.0).range(1.0..=5000.0));
         });
 
         ui.add_space(12.0);
@@ -92,7 +97,10 @@ pub fn show_properties(ui: &mut egui::Ui, scene: &mut Scene) {
         // Rotation
         ui.label(egui::RichText::new("Rotation").size(11.0).strong().color(fg));
         ui.add_space(2.0);
-        ui.add(egui::DragValue::new(&mut obj.rotation).speed(1.0).range(-360.0..=360.0).suffix(" deg").font(egui::FontId::proportional(11.0)));
+        ui.add(egui::DragValue::new(&mut obj.rotation).speed(1.0).range(-360.0..=360.0).suffix(" deg"));
+
+        // Restore style
+        *ui.style_mut() = prev_style;
     }
 
     // Borrow is released here, so we can call remove_selected
