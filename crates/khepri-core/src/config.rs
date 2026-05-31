@@ -1,5 +1,5 @@
-/// Color and layout constants shared across the Khepri engine and editor.
-
+// Color and layout constants shared across the Khepri engine and editor.
+//
 // ── Colors ──────────────────────────────────────────────────────────────────
 
 /// Primary background: cream yellow #FFFDDD
