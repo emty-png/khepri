@@ -1,7 +1,7 @@
+use crate::{hierarchy, properties, viewport};
 use eframe::egui;
 use khepri_core::config;
 use khepri_core::scene::Scene;
-use crate::{hierarchy, viewport, properties};
 
 pub struct BentoLayout {
     pub left_ratio: f32,
@@ -20,7 +20,8 @@ impl Default for BentoLayout {
 }
 
 pub fn draw_bento(ui: &mut egui::Ui, bento: &mut BentoLayout, scene: &mut Scene) {
-    let panel_bg = egui::Color32::from_rgb(config::FG_COLOR_R, config::FG_COLOR_G, config::FG_COLOR_B);
+    let panel_bg =
+        egui::Color32::from_rgb(config::FG_COLOR_R, config::FG_COLOR_G, config::FG_COLOR_B);
     let rect = ui.available_rect_before_wrap();
     let split_y = rect.top() + rect.height() * bento.top_ratio;
     let total_w = rect.width();

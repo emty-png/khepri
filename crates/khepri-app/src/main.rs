@@ -22,7 +22,8 @@ impl KhepriApp {
 impl eframe::App for KhepriApp {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
         title_bar::show(ui);
-        let bg = egui::Color32::from_rgb(config::BG_COLOR_R, config::BG_COLOR_G, config::BG_COLOR_B);
+        let bg =
+            egui::Color32::from_rgb(config::BG_COLOR_R, config::BG_COLOR_G, config::BG_COLOR_B);
         egui::CentralPanel::default()
             .frame(egui::Frame::new().fill(bg))
             .show_inside(ui, |ui| {

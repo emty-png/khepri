@@ -135,7 +135,11 @@ pub fn show_viewport(ui: &mut egui::Ui, scene: &mut Scene) {
     } else if let Some(pointer) = ui.input(|i| i.pointer.latest_pos()) {
         if rect.contains(pointer) {
             let world_pos = cam.screen_to_world(pointer, center);
-            let hovering = scene.objects.iter().rev().any(|obj| hit_test_world(world_pos, obj));
+            let hovering = scene
+                .objects
+                .iter()
+                .rev()
+                .any(|obj| hit_test_world(world_pos, obj));
             if hovering {
                 ui.ctx().set_cursor_icon(egui::CursorIcon::Grab);
             }
@@ -149,11 +153,17 @@ pub fn show_viewport(ui: &mut egui::Ui, scene: &mut Scene) {
     let origin_screen = cam.world_to_screen(egui::pos2(0.0, 0.0), center);
     let crosshair_color = egui::Color32::from_rgba_premultiplied(255, 255, 255, 40);
     ui.painter().line_segment(
-        [egui::pos2(origin_screen.x, rect.top()), egui::pos2(origin_screen.x, rect.bottom())],
+        [
+            egui::pos2(origin_screen.x, rect.top()),
+            egui::pos2(origin_screen.x, rect.bottom()),
+        ],
         egui::Stroke::new(1.0, crosshair_color),
     );
     ui.painter().line_segment(
-        [egui::pos2(rect.left(), origin_screen.y), egui::pos2(rect.right(), origin_screen.y)],
+        [
+            egui::pos2(rect.left(), origin_screen.y),
+            egui::pos2(rect.right(), origin_screen.y),
+        ],
         egui::Stroke::new(1.0, crosshair_color),
     );
 
@@ -177,16 +187,26 @@ pub fn show_viewport(ui: &mut egui::Ui, scene: &mut Scene) {
         match obj.shape {
             ShapeType::Rectangle => {
                 let corners = rotate_rect(screen_center, half_w, half_h, rot);
-                ui.painter().add(egui::Shape::convex_polygon(corners.clone(), OBJECT_FILL, stroke));
+                ui.painter().add(egui::Shape::convex_polygon(
+                    corners.clone(),
+                    OBJECT_FILL,
+                    stroke,
+                ));
             }
             ShapeType::Circle => {
                 let radius = half_w.min(half_h);
-                ui.painter().add(egui::Shape::circle_filled(screen_center, radius, OBJECT_FILL));
-                ui.painter().add(egui::Shape::circle_stroke(screen_center, radius, stroke));
+                ui.painter().add(egui::Shape::circle_filled(
+                    screen_center,
+                    radius,
+                    OBJECT_FILL,
+                ));
+                ui.painter()
+                    .add(egui::Shape::circle_stroke(screen_center, radius, stroke));
             }
             ShapeType::Triangle => {
                 let verts = rotate_triangle(screen_center, half_w, half_h, rot);
-                ui.painter().add(egui::Shape::convex_polygon(verts, OBJECT_FILL, stroke));
+                ui.painter()
+                    .add(egui::Shape::convex_polygon(verts, OBJECT_FILL, stroke));
             }
         }
     }
@@ -205,7 +225,8 @@ pub fn show_viewport(ui: &mut egui::Ui, scene: &mut Scene) {
                 for i in 0..corners.len() {
                     let a = corners[i];
                     let b = corners[(i + 1) % corners.len()];
-                    ui.painter().line_segment([a, b], egui::Stroke::new(2.0, SELECTION_COLOR));
+                    ui.painter()
+                        .line_segment([a, b], egui::Stroke::new(2.0, SELECTION_COLOR));
                 }
             }
             ShapeType::Circle => {
@@ -222,7 +243,8 @@ pub fn show_viewport(ui: &mut egui::Ui, scene: &mut Scene) {
                 for i in 0..verts.len() {
                     let a = verts[i];
                     let b = verts[(i + 1) % verts.len()];
-                    ui.painter().line_segment([a, b], egui::Stroke::new(2.0, SELECTION_COLOR));
+                    ui.painter()
+                        .line_segment([a, b], egui::Stroke::new(2.0, SELECTION_COLOR));
                 }
             }
         }
@@ -247,10 +269,30 @@ fn rotate_rect(center: egui::Pos2, half_w: f32, half_h: f32, radians: f32) -> Ve
     let cos_a = radians.cos();
     let sin_a = radians.sin();
     vec![
-        rotate_around(egui::pos2(center.x - half_w, center.y - half_h), center, cos_a, sin_a),
-        rotate_around(egui::pos2(center.x + half_w, center.y - half_h), center, cos_a, sin_a),
-        rotate_around(egui::pos2(center.x + half_w, center.y + half_h), center, cos_a, sin_a),
-        rotate_around(egui::pos2(center.x - half_w, center.y + half_h), center, cos_a, sin_a),
+        rotate_around(
+            egui::pos2(center.x - half_w, center.y - half_h),
+            center,
+            cos_a,
+            sin_a,
+        ),
+        rotate_around(
+            egui::pos2(center.x + half_w, center.y - half_h),
+            center,
+            cos_a,
+            sin_a,
+        ),
+        rotate_around(
+            egui::pos2(center.x + half_w, center.y + half_h),
+            center,
+            cos_a,
+            sin_a,
+        ),
+        rotate_around(
+            egui::pos2(center.x - half_w, center.y + half_h),
+            center,
+            cos_a,
+            sin_a,
+        ),
     ]
 }
 
@@ -258,11 +300,14 @@ fn rotate_triangle(center: egui::Pos2, half_w: f32, half_h: f32, radians: f32) -
     let cos_a = radians.cos();
     let sin_a = radians.sin();
     let verts = [
-        egui::pos2(center.x, center.y - half_h),         // top
+        egui::pos2(center.x, center.y - half_h),          // top
         egui::pos2(center.x + half_w, center.y + half_h), // bottom-right
         egui::pos2(center.x - half_w, center.y + half_h), // bottom-left
     ];
-    verts.iter().map(|v| rotate_around(*v, center, cos_a, sin_a)).collect()
+    verts
+        .iter()
+        .map(|v| rotate_around(*v, center, cos_a, sin_a))
+        .collect()
 }
 
 // ── Hit testing (in world space, no rotation for simplicity) ────────────────
@@ -312,7 +357,11 @@ fn draw_grid(ui: &mut egui::Ui, viewport: egui::Rect, cam: &Camera, center: egui
 
     // Snap to nice numbers
     let nice = [10.0, 20.0, 25.0, 50.0, 100.0, 200.0, 500.0];
-    let step = nice.iter().copied().find(|&s| s * cam.zoom >= 20.0).unwrap_or(500.0);
+    let step = nice
+        .iter()
+        .copied()
+        .find(|&s| s * cam.zoom >= 20.0)
+        .unwrap_or(500.0);
 
     let stroke = egui::Stroke::new(0.5, GRID_COLOR);
 
@@ -329,7 +378,10 @@ fn draw_grid(ui: &mut egui::Ui, viewport: egui::Rect, cam: &Camera, center: egui
     while x <= max_x {
         let sx = cam.world_to_screen(egui::pos2(x, 0.0), center).x;
         ui.painter().line_segment(
-            [egui::pos2(sx, viewport.top()), egui::pos2(sx, viewport.bottom())],
+            [
+                egui::pos2(sx, viewport.top()),
+                egui::pos2(sx, viewport.bottom()),
+            ],
             stroke,
         );
         x += step;
@@ -339,7 +391,10 @@ fn draw_grid(ui: &mut egui::Ui, viewport: egui::Rect, cam: &Camera, center: egui
     while y <= max_y {
         let sy = cam.world_to_screen(egui::pos2(0.0, y), center).y;
         ui.painter().line_segment(
-            [egui::pos2(viewport.left(), sy), egui::pos2(viewport.right(), sy)],
+            [
+                egui::pos2(viewport.left(), sy),
+                egui::pos2(viewport.right(), sy),
+            ],
             stroke,
         );
         y += step;

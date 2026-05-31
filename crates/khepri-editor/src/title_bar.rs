@@ -4,15 +4,21 @@ use khepri_core::config;
 pub fn show(ui: &mut egui::Ui) {
     let bg = egui::Color32::from_rgb(config::BG_COLOR_R, config::BG_COLOR_G, config::BG_COLOR_B);
     let fg = egui::Color32::from_rgb(config::FG_COLOR_R, config::FG_COLOR_G, config::FG_COLOR_B);
-    let hover = egui::Color32::from_rgb(config::HOVER_COLOR_R, config::HOVER_COLOR_G, config::HOVER_COLOR_B);
+    let hover = egui::Color32::from_rgb(
+        config::HOVER_COLOR_R,
+        config::HOVER_COLOR_G,
+        config::HOVER_COLOR_B,
+    );
 
     egui::Panel::top("title_bar")
         .frame(egui::Frame::NONE)
         .show_inside(ui, |ui| {
             ui.set_min_height(config::TITLE_BAR_HEIGHT);
             let rect = ui.available_rect_before_wrap();
-            let title_bar_rect =
-                egui::Rect::from_min_size(rect.min, egui::vec2(rect.width(), config::TITLE_BAR_HEIGHT));
+            let title_bar_rect = egui::Rect::from_min_size(
+                rect.min,
+                egui::vec2(rect.width(), config::TITLE_BAR_HEIGHT),
+            );
             let title_bar_response = ui.interact(
                 title_bar_rect,
                 egui::Id::new("title_bar"),
@@ -151,7 +157,12 @@ fn paint_maximize_icon(painter: &egui::Painter, center: egui::Pos2, color: egui:
     );
 }
 
-fn paint_restore_icon(painter: &egui::Painter, center: egui::Pos2, color: egui::Color32, bg_color: egui::Color32) {
+fn paint_restore_icon(
+    painter: &egui::Painter,
+    center: egui::Pos2,
+    color: egui::Color32,
+    bg_color: egui::Color32,
+) {
     let size = 8.0;
     let stroke = egui::Stroke::new(1.5, color);
     let corner = egui::CornerRadius::same(0);

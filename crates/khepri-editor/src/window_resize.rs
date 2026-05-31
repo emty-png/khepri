@@ -9,10 +9,7 @@ pub fn custom_window_resize(ui: &mut egui::Ui) {
     let rect = ui.ctx().content_rect();
     let border = 6.0;
 
-    let tl_rect = egui::Rect::from_min_max(
-        rect.min,
-        rect.min + egui::vec2(border, border),
-    );
+    let tl_rect = egui::Rect::from_min_max(rect.min, rect.min + egui::vec2(border, border));
     let tr_rect = egui::Rect::from_min_max(
         egui::pos2(rect.max.x - border, rect.min.y),
         egui::pos2(rect.max.x, rect.min.y + border),
@@ -21,10 +18,7 @@ pub fn custom_window_resize(ui: &mut egui::Ui) {
         egui::pos2(rect.min.x, rect.max.y - border),
         egui::pos2(rect.min.x + border, rect.max.y),
     );
-    let br_rect = egui::Rect::from_min_max(
-        rect.max - egui::vec2(border, border),
-        rect.max,
-    );
+    let br_rect = egui::Rect::from_min_max(rect.max - egui::vec2(border, border), rect.max);
 
     let l_rect = egui::Rect::from_min_max(
         egui::pos2(rect.min.x, rect.min.y + border),
@@ -45,14 +39,38 @@ pub fn custom_window_resize(ui: &mut egui::Ui) {
 
     use egui::viewport::ResizeDirection;
     let resize_areas = [
-        (tl_rect, ResizeDirection::NorthWest, egui::CursorIcon::ResizeNwSe),
-        (tr_rect, ResizeDirection::NorthEast, egui::CursorIcon::ResizeNeSw),
-        (bl_rect, ResizeDirection::SouthWest, egui::CursorIcon::ResizeNeSw),
-        (br_rect, ResizeDirection::SouthEast, egui::CursorIcon::ResizeNwSe),
+        (
+            tl_rect,
+            ResizeDirection::NorthWest,
+            egui::CursorIcon::ResizeNwSe,
+        ),
+        (
+            tr_rect,
+            ResizeDirection::NorthEast,
+            egui::CursorIcon::ResizeNeSw,
+        ),
+        (
+            bl_rect,
+            ResizeDirection::SouthWest,
+            egui::CursorIcon::ResizeNeSw,
+        ),
+        (
+            br_rect,
+            ResizeDirection::SouthEast,
+            egui::CursorIcon::ResizeNwSe,
+        ),
         (l_rect, ResizeDirection::West, egui::CursorIcon::ResizeWest),
         (r_rect, ResizeDirection::East, egui::CursorIcon::ResizeEast),
-        (t_rect, ResizeDirection::North, egui::CursorIcon::ResizeNorth),
-        (b_rect, ResizeDirection::South, egui::CursorIcon::ResizeSouth),
+        (
+            t_rect,
+            ResizeDirection::North,
+            egui::CursorIcon::ResizeNorth,
+        ),
+        (
+            b_rect,
+            ResizeDirection::South,
+            egui::CursorIcon::ResizeSouth,
+        ),
     ];
 
     for (r, dir, cursor) in resize_areas {
