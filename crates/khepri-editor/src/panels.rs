@@ -106,10 +106,10 @@ pub fn draw_bento(ui: &mut egui::Ui, bento: &mut BentoLayout, scene: &mut Scene)
     if resp.hovered() || resp.dragged() {
         ui.ctx().set_cursor_icon(egui::CursorIcon::ResizeSouth);
     }
-    if resp.dragged() {
-        if let Some(pointer) = ui.input(|i| i.pointer.latest_pos()) {
-            bento.top_ratio = ((pointer.y - rect.top()) / rect.height()).clamp(0.2, 0.8);
-        }
+    if resp.dragged()
+        && let Some(pointer) = ui.input(|i| i.pointer.latest_pos())
+    {
+        bento.top_ratio = ((pointer.y - rect.top()) / rect.height()).clamp(0.2, 0.8);
     }
 
     // Left/Center splitter
@@ -122,10 +122,10 @@ pub fn draw_bento(ui: &mut egui::Ui, bento: &mut BentoLayout, scene: &mut Scene)
     if resp.hovered() || resp.dragged() {
         ui.ctx().set_cursor_icon(egui::CursorIcon::ResizeEast);
     }
-    if resp.dragged() {
-        if let Some(pointer) = ui.input(|i| i.pointer.latest_pos()) {
-            bento.left_ratio = ((pointer.x - rect.min.x) / rect.width()).clamp(0.1, 0.7);
-        }
+    if resp.dragged()
+        && let Some(pointer) = ui.input(|i| i.pointer.latest_pos())
+    {
+        bento.left_ratio = ((pointer.x - rect.min.x) / rect.width()).clamp(0.1, 0.7);
     }
 
     // Center/Right splitter
@@ -138,9 +138,9 @@ pub fn draw_bento(ui: &mut egui::Ui, bento: &mut BentoLayout, scene: &mut Scene)
     if resp.hovered() || resp.dragged() {
         ui.ctx().set_cursor_icon(egui::CursorIcon::ResizeEast);
     }
-    if resp.dragged() {
-        if let Some(pointer) = ui.input(|i| i.pointer.latest_pos()) {
-            bento.right_ratio = ((rect.max.x - pointer.x) / rect.width()).clamp(0.1, 0.7);
-        }
+    if resp.dragged()
+        && let Some(pointer) = ui.input(|i| i.pointer.latest_pos())
+    {
+        bento.right_ratio = ((rect.max.x - pointer.x) / rect.width()).clamp(0.1, 0.7);
     }
 }

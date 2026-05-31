@@ -102,29 +102,29 @@ pub fn show_viewport(ui: &mut egui::Ui, scene: &mut Scene) {
     }
 
     // Left-click select / drag-to-move
-    if response.clicked() {
-        if let Some(pointer) = ui.input(|i| i.pointer.latest_pos()) {
-            let world_pos = cam.screen_to_world(pointer, center);
-            let mut found = false;
-            for obj in scene.objects.iter().rev() {
-                if hit_test_world(world_pos, obj) {
-                    scene.select(Some(obj.id));
-                    found = true;
-                    break;
-                }
+    if response.clicked()
+        && let Some(pointer) = ui.input(|i| i.pointer.latest_pos())
+    {
+        let world_pos = cam.screen_to_world(pointer, center);
+        let mut found = false;
+        for obj in scene.objects.iter().rev() {
+            if hit_test_world(world_pos, obj) {
+                scene.select(Some(obj.id));
+                found = true;
+                break;
             }
-            if !found {
-                scene.select(None);
-            }
+        }
+        if !found {
+            scene.select(None);
         }
     }
 
-    if response.dragged_by(egui::PointerButton::Primary) {
-        if let Some(obj) = scene.get_selected_mut() {
-            let delta = response.drag_delta();
-            obj.x += delta.x / cam.zoom;
-            obj.y += delta.y / cam.zoom;
-        }
+    if response.dragged_by(egui::PointerButton::Primary)
+        && let Some(obj) = scene.get_selected_mut()
+    {
+        let delta = response.drag_delta();
+        obj.x += delta.x / cam.zoom;
+        obj.y += delta.y / cam.zoom;
     }
 
     // Cursor
@@ -132,17 +132,17 @@ pub fn show_viewport(ui: &mut egui::Ui, scene: &mut Scene) {
         ui.ctx().set_cursor_icon(egui::CursorIcon::Grabbing);
     } else if response.dragged_by(egui::PointerButton::Middle) {
         ui.ctx().set_cursor_icon(egui::CursorIcon::AllScroll);
-    } else if let Some(pointer) = ui.input(|i| i.pointer.latest_pos()) {
-        if rect.contains(pointer) {
-            let world_pos = cam.screen_to_world(pointer, center);
-            let hovering = scene
-                .objects
-                .iter()
-                .rev()
-                .any(|obj| hit_test_world(world_pos, obj));
-            if hovering {
-                ui.ctx().set_cursor_icon(egui::CursorIcon::Grab);
-            }
+    } else if let Some(pointer) = ui.input(|i| i.pointer.latest_pos())
+        && rect.contains(pointer)
+    {
+        let world_pos = cam.screen_to_world(pointer, center);
+        let hovering = scene
+            .objects
+            .iter()
+            .rev()
+            .any(|obj| hit_test_world(world_pos, obj));
+        if hovering {
+            ui.ctx().set_cursor_icon(egui::CursorIcon::Grab);
         }
     }
 
