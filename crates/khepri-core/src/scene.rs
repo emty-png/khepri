@@ -1,6 +1,7 @@
-/// Shape types available in the scene editor.
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Copy, PartialEq, Debug)]
+/// Shape types available in the scene editor.
+#[derive(Clone, Copy, PartialEq, Debug, Serialize, Deserialize)]
 pub enum ShapeType {
     Rectangle,
     Circle,
@@ -25,8 +26,16 @@ impl ShapeType {
     }
 }
 
+/// Serializable scene data for persistence.
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct SceneData {
+    pub objects: Vec<SceneObject>,
+    pub next_id: u64,
+    pub name_counters: [u32; 3],
+}
+
 /// A single object in the 2D scene.
-#[derive(Clone)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct SceneObject {
     pub id: u64,
     pub name: String,
@@ -109,6 +118,25 @@ impl Scene {
 
     pub fn object_count(&self) -> usize {
         self.objects.len()
+    }
+
+    /// Create a serializable snapshot (drops selection state).
+    pub fn to_scene_data(&self) -> SceneData {
+        SceneData {
+            objects: self.objects.clone(),
+            next_id: self.next_id,
+            name_counters: self.name_counters,
+        }
+    }
+
+    /// Restore scene from serialized data.
+    pub fn from_scene_data(data: SceneData) -> Self {
+        Self {
+            objects: data.objects,
+            selected_id: None,
+            next_id: data.next_id,
+            name_counters: data.name_counters,
+        }
     }
 }
 
@@ -195,5 +223,33 @@ mod tests {
         let obj = scene.get_selected().unwrap();
         assert_eq!(obj.x, 250.0);
         assert_eq!(obj.y, 300.0);
+    }
+
+    #[test]
+    fn test_scene_data_roundtrip() {
+        let mut scene = Scene::new();
+        scene.add_object(ShapeType::Rectangle);
+        scene.add_object(ShapeType::Circle);
+        scene.select(Some(1));
+
+        let data = scene.to_scene_data();
+        let ron_str = ron::to_string(&data).unwrap();
+        let loaded_data: SceneData = ron::from_str(&ron_str).unwrap();
+        let loaded = Scene::from_scene_data(loaded_data);
+
+        assert_eq!(loaded.object_count(), 2);
+        assert_eq!(loaded.objects[0].name, "Rectangle 1");
+        assert_eq!(loaded.objects[1].name, "Circle 1");
+        assert_eq!(loaded.selected_id, None); // selection not persisted
+        assert_eq!(loaded.next_id, 3);
+    }
+
+    #[test]
+    fn test_shape_type_roundtrip() {
+        for shape in [ShapeType::Rectangle, ShapeType::Circle, ShapeType::Triangle] {
+            let ron_str = ron::to_string(&shape).unwrap();
+            let loaded: ShapeType = ron::from_str(&ron_str).unwrap();
+            assert_eq!(shape, loaded);
+        }
     }
 }

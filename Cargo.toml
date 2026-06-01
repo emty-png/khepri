@@ -1,7 +1,9 @@
 [workspace]
 members = [
     "crates/khepri-core",
+    "crates/khepri-storage",
     "crates/khepri-editor",
+    "crates/khepri-hub",
     "crates/khepri-app",
 ]
 resolver = "2"
